@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>
+    Darkline India GST Invoice
+  </title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      background:#dcdcdc;
+      padding:20px;
+    }
+
+    .top-buttons{
+      text-align:center;
+      margin-bottom:20px;
+    }
+
+    button{
+
+      background:#111;
+
+      color:#fff;
+
+      border:none;
+
+      padding:12px 22px;
+
+      border-radius:4px;
+
+      cursor:pointer;
+
+      margin:5px;
+
+      font-size:14px;
+
+    }
+
+    .invoice{
+
+      width:210mm;
+
+      min-height:297mm;
+
+      margin:auto;
+
+      background:#fff;
+
+      border:2px solid #000;
+
+      padding:5mm;
+
+      color:#000;
+
+    }
+
+    .company-header{
+
+      border:1px solid #000;
+
+      text-align:center;
+
+      padding:10px;
+
+      margin-bottom:5px;
+
+    }
+
+    .company-header h1{
+
+      font-size:32px;
+
+      margin-bottom:5px;
+
+      letter-spacing:1px;
+
+    }
+
+    .company-header p{
+
+      font-size:12px;
+
+      line-height:20px;
+
+    }
+
+    .invoice-title{
+
+      margin-top:5px;
+
+      font-size:22px;
+
+      font-weight:bold;
+
+      text-decoration:underline;
+
+    }
+
+    table{
+
+      width:100%;
+
+      border-collapse:collapse;
+
+      margin-bottom:5px;
+
+    }
+
+    table td,
+    table th{
+
+      border:1px solid #000;
+
+      padding:5px;
+
+      font-size:11px;
+
+      vertical-align:top;
+
+    }
+
+    table th{
+
+      background:#f2f2f2;
+
+      text-align:center;
+
+      font-weight:bold;
+
+    }
+
+    input,
+    textarea{
+
+      width:100%;
+
+      border:none;
+
+      outline:none;
+
+      background:transparent;
+
+      font-size:11px;
+
+      resize:none;
+
+    }
+
+    .buyer-box td{
+
+      height:95px;
+
+    }
+
+    .items-table td{
+
+      height:28px;
+
+    }
+
+    .totals{
+
+      width:350px;
+
+      margin-left:auto;
+
+      margin-top:8px;
+
+    }
+
+    .amount-words{
+
+      border:1px solid #000;
+
+      padding:8px;
+
+      margin-top:5px;
+
+      font-size:11px;
+
+      min-height:50px;
+
+    }
+
+    .declaration{
+
+      display:flex;
+
+      justify-content:space-between;
+
+      margin-top:10px;
+
+      gap:10px;
+
+    }
+
+    .decl-box{
+
+      width:60%;
+
+      border:1px solid #000;
+
+      padding:10px;
+
+      font-size:11px;
+
+      line-height:18px;
+
+      min-height:110px;
+
+    }
+
+    .sign-box{
+
+      width:35%;
+
+      border:1px solid #000;
+
+      padding:10px;
+
+      font-size:11px;
+
+      text-align:center;
+
+      position:relative;
+
+    }
+
+    .sign-space{
+
+      height:70px;
+
+    }
+
+    .bank-box{
+
+      border:1px solid #000;
+
+      padding:10px;
+
+      margin-top:8px;
+
+      font-size:11px;
+
+      line-height:22px;
+
+    }
+
+    .footer{
+
+      margin-top:8px;
+
+      text-align:center;
+
+      font-size:10px;
+
+      border-top:1px solid #000;
+
+      padding-top:5px;
+
+    }
+
+    @media screen and (max-width:900px){
+
+      body{
+
+        padding:5px;
+
+      }
+
+      .invoice{
+
+        width:100%;
+
+        overflow-x:auto;
+
+      }
+
+      table{
+
+        min-width:900px;
+
+      }
+
+    }
+
+    @media print{
+
+      body{
+
+        background:#fff;
+
+        padding:0;
+
+      }
+
+      .top-buttons{
+
+        display:none;
+
+      }
+
+      .invoice{
+
+        width:100%;
+
+        border:none;
+
+        padding:4mm;
+
+      }
+
+      @page{
+
+        size:A4;
+
+        margin:4mm;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="top-buttons">
+
+    <button onclick="addRow()">
+      + Add Item
+    </button>
+
+    <button onclick="downloadPDF()">
+      Generate PDF
+    </button>
+
+  </div>
+
+  <div class="invoice"
+       id="invoice">
+
+    <!-- Company -->
+
+    <div class="company-header">
+
+      <h1>
+        DARKLINE INDIA
+      </h1>
+
+      <p>
+
+        Ground Floor,
+        Old Village Okhla,
+        New Delhi-110025,
+        Delhi,
+        India
+
+      </p>
+
+      <p>
+
+        GSTIN :
+        07AHHPN4889J1ZN
+
+      </p>
+
+      <div class="invoice-title">
+
+        TAX INVOICE
+
+      </div>
+
+    </div>
+
+    <!-- Invoice Details -->
+
+    <table>
+
+      <tr>
+
+        <td width="25%">
+
+          <strong>
+            Invoice No
+          </strong>
+
+          <br>
+
+          <input
+            type="text"
+            id="invoiceNo"
+            style="font-weight:bold;"
+          >
+
+        </td>
+
+        <td width="25%">
+
+          <strong>
+            Invoice Date
+          </strong>
+
+          <br>
+
+          <input
+            type="date"
+            id="invoiceDate"
+          >
+
+        </td>
+
+        <td width="25%">
+
+          <strong>
+            State
+          </strong>
+
+          <br>
+
+          Delhi
+
+        </td>
+
+        <td width="25%">
+
+          <strong>
+            State Code
+          </strong>
+
+          <br>
+
+          07
+
+        </td>
+
+      </tr>
+
+    </table>
+
+    <!-- Buyer -->
+
+    <table class="buyer-box">
+
+      <tr>
+
+        <td width="50%">
+
+          <strong>
+            Buyer (Bill To)
+          </strong>
+
+          <br><br>
+
+          <textarea
+            rows="5"
+            placeholder="Customer Name&#10;Address&#10;GSTIN"
+          ></textarea>
+
+        </td>
+
+        <td width="50%">
+
+          <strong>
+            Consignee (Ship To)
+          </strong>
+
+          <br><br>
+
+          <textarea
+            rows="5"
+            placeholder="Shipping Name&#10;Shipping Address"
+          ></textarea>
+
+        </td>
+
+      </tr>
+
+    </table>
+
+    <!-- Items -->
+
+    <table class="items-table">
+
+      <thead>
+
+        <tr>
+
+          <th width="5%">
+            S.No
+          </th>
+
+          <th width="32%">
+            Description of Goods
+          </th>
+
+          <th width="10%">
+            HSN
+          </th>
+
+          <th width="8%">
+            Qty
+          </th>
+
+          <th width="10%">
+            Rate
+          </th>
+
+          <th width="10%">
+            Taxable
+          </th>
+
+          <th width="7%">
+            GST%
+          </th>
+
+          <th width="10%">
+            Amount
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="itemBody">
+
+      </tbody>
+
+    </table>
+
+    <!-- Totals -->
+
+    <table class="totals">
+
+      <tr>
+
+        <td>
+          Taxable Amount
+        </td>
+
+        <td id="taxableAmount">
+          0.00
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+          CGST
+        </td>
+
+        <td id="cgstAmount">
+          0.00
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+          SGST
+        </td>
+
+        <td id="sgstAmount">
+          0.00
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+
+          <strong>
+            Grand Total
+          </strong>
+
+        </td>
+
+        <td id="grandTotal">
+
+          <strong>
+            0.00
+          </strong>
+
+        </td>
+
+      </tr>
+
+    </table>
+
+    <!-- Amount in Words -->
+
+    <div class="amount-words">
+
+      <strong>
+        Amount in Words :
+      </strong>
+
+      <span id="amountWords">
+
+        Zero Rupees Only
+
+      </span>
+
+    </div>
+
+    <!-- Bank -->
+
+    <div class="bank-box">
+
+      <strong>
+        Bank Details
+      </strong>
+
+      <br><br>
+
+      Bank Name :
+      ___________________
+
+      <br>
+
+      Account No :
+      ___________________
+
+      <br>
+
+      IFSC Code :
+      ___________________
+
+    </div>
+
+    <!-- Declaration -->
+
+    <div class="declaration">
+
+      <div class="decl-box">
+
+        <strong>
+          Declaration
+        </strong>
+
+        <br><br>
+
+        We declare that this invoice shows
+        the actual price of the goods
+        described and that all particulars
+        are true and correct.
+
+        <br><br>
+
+        Subject to Delhi Jurisdiction.
+
+      </div>
+
+      <div class="sign-box">
+
+        <strong>
+          For DARKLINE INDIA
+        </strong>
+
+        <div class="sign-space">
+
+        </div>
+
+        Authorized Signatory
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="footer">
+
+      This is a Computer Generated Invoice
+
+    </div>
+
+  </div>
+
+  <script>
+
+    // Invoice Number
+
+    let invoiceCounter =
+
+    localStorage.getItem("invoiceCounter")
+
+    || 1;
+
+    function updateInvoiceNumber(){
+
+      document.getElementById("invoiceNo").value =
+
+      "DLI-" +
+
+      String(invoiceCounter).padStart(4,"0");
+
+    }
+
+    updateInvoiceNumber();
+
+    // Date
+
+    document.getElementById("invoiceDate")
+
+    .valueAsDate = new Date();
+
+    // Number To Words
+
+    function numberToWords(num){
+
+      const a = [
+
+        '', 'One', 'Two', 'Three', 'Four',
+
+        'Five', 'Six', 'Seven', 'Eight',
+
+        'Nine', 'Ten', 'Eleven', 'Twelve',
+
+        'Thirteen', 'Fourteen', 'Fifteen',
+
+        'Sixteen', 'Seventeen', 'Eighteen',
+
+        'Nineteen'
+
+      ];
+
+      const b = [
+
+        '', '', 'Twenty', 'Thirty', 'Forty',
+
+        'Fifty', 'Sixty', 'Seventy',
+
+        'Eighty', 'Ninety'
+
+      ];
+
+      if((num = num.toString()).length > 9)
+      return 'Overflow';
+
+      let n = ('000000000' + num)
+
+      .substr(-9)
+
+      .match(/.{1,2}/g);
+
+      let str = '';
+
+      str += (Number(n[0]) != 0)
+
+      ? (a[Number(n[0])] ||
+
+      b[n[0][0]] + ' ' +
+
+      a[n[0][1]]) + ' Crore '
+
+      : '';
+
+      str += (Number(n[1]) != 0)
+
+      ? (a[Number(n[1])] ||
+
+      b[n[1][0]] + ' ' +
+
+      a[n[1][1]]) + ' Lakh '
+
+      : '';
+
+      str += (Number(n[2]) != 0)
+
+      ? (a[Number(n[2])] ||
+
+      b[n[2][0]] + ' ' +
+
+      a[n[2][1]]) + ' Thousand '
+
+      : '';
+
+      str += (Number(n[3]) != 0)
+
+      ? (a[Number(n[3])] ||
+
+      b[n[3][0]] + ' ' +
+
+      a[n[3][1]]) + ' Hundred '
+
+      : '';
+
+      str += (Number(n[4]) != 0)
+
+      ? ((str != '') ? 'and ' : '') +
+
+      (a[Number(n[4])] ||
+
+      b[n[4][0]] + ' ' +
+
+      a[n[4][1]]) + ' '
+
+      : '';
+
+      return str + 'Rupees Only';
+
+    }
+
+    // Create Row
+
+    function createRow(index){
+
+      return `
+
+      <tr>
+
+        <td>
+          ${index}
+        </td>
+
+        <td>
+
+          <input
+            type="text"
+            class="desc"
+          >
+
+        </td>
+
+        <td>
+
+          <input type="text">
+
+        </td>
+
+        <td>
+
+          <input
+            type="number"
+            class="qty"
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="number"
+            class="rate"
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="text"
+            class="taxable"
+            readonly
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="number"
+            class="gst"
+            value="18"
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="text"
+            class="total"
+            readonly
+          >
+
+        </td>
+
+      </tr>
+
+      `;
+
+    }
+
+    // Default Rows
+
+    function loadRows(){
+
+      let body =
+
+      document.getElementById("itemBody");
+
+      for(let i=1;i<=5;i++){
+
+        body.innerHTML +=
+
+        createRow(i);
+
+      }
+
+    }
+
+    loadRows();
+
+    // Add Row
+
+    function addRow(){
+
+      let body =
+
+      document.getElementById("itemBody");
+
+      let rowCount =
+
+      body.rows.length + 1;
+
+      body.innerHTML +=
+
+      createRow(rowCount);
+
+    }
+
+    // Calculate
+
+    function calculateTotals(){
+
+      let rows =
+
+      document.querySelectorAll("#itemBody tr");
+
+      let taxableTotal = 0;
+
+      let gstTotal = 0;
+
+      let grandTotal = 0;
+
+      rows.forEach((row)=>{
+
+        let desc =
+
+        row.querySelector(".desc")
+
+        .value
+
+        .trim();
+
+        let qty =
+
+        parseFloat(
+
+        row.querySelector(".qty").value
+
+        ) || 0;
+
+        let rate =
+
+        parseFloat(
+
+        row.querySelector(".rate").value
+
+        ) || 0;
+
+        let gst =
+
+        parseFloat(
+
+        row.querySelector(".gst").value
+
+        ) || 0;
+
+        if(desc === ""){
+
+          row.querySelector(".taxable").value = "";
+
+          row.querySelector(".total").value = "";
+
+          return;
+
+        }
+
+        let taxable = qty * rate;
+
+        let gstAmount =
+
+        taxable * gst / 100;
+
+        let total =
+
+        taxable + gstAmount;
+
+        row.querySelector(".taxable").value =
+
+        taxable.toFixed(2);
+
+        row.querySelector(".total").value =
+
+        total.toFixed(2);
+
+        taxableTotal += taxable;
+
+        gstTotal += gstAmount;
+
+        grandTotal += total;
+
+      });
+
+      document.getElementById("taxableAmount")
+
+      .innerText =
+
+      taxableTotal.toFixed(2);
+
+      document.getElementById("cgstAmount")
+
+      .innerText =
+
+      (gstTotal/2).toFixed(2);
+
+      document.getElementById("sgstAmount")
+
+      .innerText =
+
+      (gstTotal/2).toFixed(2);
+
+      document.getElementById("grandTotal")
+
+      .innerHTML =
+
+      "<strong>" +
+
+      grandTotal.toFixed(2) +
+
+      "</strong>";
+
+      document.getElementById("amountWords")
+
+      .innerText =
+
+      numberToWords(
+
+        Math.round(grandTotal)
+
+      );
+
+    }
+
+    document.addEventListener(
+
+      "input",
+
+      calculateTotals
+
+    );
+
+    // PDF
+
+    function downloadPDF(){
+
+      calculateTotals();
+
+      let invoice =
+
+      document.getElementById("invoice");
+
+      let invoiceNo =
+
+      document.getElementById("invoiceNo")
+
+      .value;
+
+      let options = {
+
+        margin:[3,3,3,3],
+
+        filename:
+
+        invoiceNo + ".pdf",
+
+        image:{
+
+          type:"jpeg",
+
+          quality:1
+
+        },
+
+        html2canvas:{
+
+          scale:2,
+
+          useCORS:true
+
+        },
+
+        jsPDF:{
+
+          unit:"mm",
+
+          format:"a4",
+
+          orientation:"portrait"
+
+        }
+
+      };
+
+      html2pdf()
+
+      .set(options)
+
+      .from(invoice)
+
+      .save();
+
+      // Next Invoice
+
+      invoiceCounter++;
+
+      localStorage.setItem(
+
+        "invoiceCounter",
+
+        invoiceCounter
+
+      );
+
+      setTimeout(()=>{
+
+        updateInvoiceNumber();
+
+      },1000);
+
+    }
+
+  </script>
+
+</body>
+
+</html>
