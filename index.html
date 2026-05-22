@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Darkline India GST Invoice Generator</title>
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
+
+  <title>
+    Darkline India GST Invoice
+  </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -13,189 +20,327 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family:Arial, sans-serif;
+      font-family:Arial,sans-serif;
     }
 
     body{
-      background:#f3f3f3;
-      padding:20px;
+      background:#f2f2f2;
+      padding:15px;
     }
 
     .top-buttons{
       text-align:center;
-      margin-bottom:20px;
+      margin-bottom:15px;
     }
 
     button{
-      background:#000;
-      color:#fff;
-      border:none;
       padding:12px 20px;
       margin:5px;
-      cursor:pointer;
+      border:none;
+      background:#000;
+      color:#fff;
       border-radius:5px;
+      cursor:pointer;
       font-size:14px;
     }
 
     .invoice-container{
-      width:100%;
-      max-width:1100px;
+
+      width:210mm;
+      min-height:297mm;
+
       margin:auto;
+
       background:#fff;
-      border:2px solid #000;
-      padding:25px;
+
+      padding:10mm;
+
+      border:1px solid #000;
+
     }
 
-    .company-header{
+    .header{
+
       text-align:center;
+
       border-bottom:2px solid #000;
-      padding-bottom:15px;
-      margin-bottom:20px;
+
+      padding-bottom:10px;
+
+      margin-bottom:15px;
+
     }
 
-    .company-header h1{
-      font-size:34px;
-      margin-bottom:8px;
+    .header h1{
+
+      font-size:30px;
+
+      margin-bottom:5px;
+
     }
 
-    .company-header p{
-      font-size:14px;
-      line-height:22px;
+    .header p{
+
+      font-size:13px;
+
+      line-height:20px;
+
     }
 
     .invoice-title{
-      margin-top:15px;
-      font-size:26px;
+
+      margin-top:10px;
+
+      font-size:24px;
+
+      font-weight:bold;
+
     }
 
     table{
+
       width:100%;
+
       border-collapse:collapse;
-      margin-bottom:20px;
+
+      margin-bottom:15px;
+
     }
 
     table td,
     table th{
+
       border:1px solid #000;
-      padding:8px;
-      font-size:14px;
+
+      padding:6px;
+
+      font-size:12px;
+
+      word-break:break-word;
+
     }
 
     table th{
+
       background:#efefef;
+
     }
 
-    input{
+    input,
+    textarea{
+
       width:100%;
+
       border:none;
+
       outline:none;
-      font-size:14px;
+
+      font-size:12px;
+
+      resize:none;
+
+      background:transparent;
+
     }
 
     .customer-box td{
+
       vertical-align:top;
-      height:120px;
+
+      height:110px;
+
+    }
+
+    .items-table td{
+
+      height:35px;
+
     }
 
     .totals{
-      width:350px;
+
+      width:320px;
+
       margin-left:auto;
+
     }
 
     .footer{
+
       margin-top:40px;
+
       display:flex;
+
       justify-content:space-between;
+
       align-items:flex-end;
+
     }
 
     .signature{
+
       margin-top:70px;
+
       border-top:1px solid #000;
+
       text-align:center;
+
       padding-top:5px;
+
+      width:220px;
+
     }
 
-    @media(max-width:768px){
+    @media screen and (max-width:900px){
+
+      body{
+
+        padding:5px;
+
+      }
 
       .invoice-container{
+
+        width:100%;
+
         padding:10px;
+
+        overflow-x:auto;
+
       }
 
       table{
-        display:block;
-        overflow-x:auto;
+
+        min-width:900px;
+
       }
 
-      .footer{
-        flex-direction:column;
-        gap:30px;
-      }
-
-      .totals{
-        width:100%;
-      }
     }
 
     @media print{
 
-      .top-buttons{
-        display:none;
+      body{
+
+        background:#fff;
+
+        padding:0;
+
       }
 
-      body{
-        background:#fff;
-        padding:0;
+      .top-buttons{
+
+        display:none;
+
       }
 
       .invoice-container{
+
+        width:100%;
+
         border:none;
+
+        padding:8mm;
+
+      }
+
+      @page{
+
+        size:A4;
+
+        margin:8mm;
+
       }
 
     }
 
   </style>
+
 </head>
 
 <body>
 
   <div class="top-buttons">
-    <button onclick="addRow()">+ Add Item</button>
-    <button onclick="downloadPDF()">Generate PDF</button>
+
+    <button onclick="addRow()">
+      + Add Item
+    </button>
+
+    <button onclick="downloadPDF()">
+      Generate PDF
+    </button>
+
   </div>
 
-  <div class="invoice-container" id="invoice">
+  <div class="invoice-container"
+       id="invoice">
 
-    <div class="company-header">
+    <div class="header">
 
-      <h1>DARKLINE INDIA</h1>
+      <h1>
+        DARKLINE INDIA
+      </h1>
 
       <p>
-        Ground Floor, Old Village Okhla,<br>
-        New Delhi-110025, Delhi, India
+
+        Ground Floor,
+        Old Village Okhla,<br>
+
+        New Delhi-110025,
+        Delhi,
+        India
+
       </p>
 
       <p>
-        GSTIN : 07AHHPN4889J1ZN
+
+        GSTIN :
+        07AHHPN4889J1ZN
+
       </p>
 
       <div class="invoice-title">
+
         TAX INVOICE
+
       </div>
 
     </div>
 
+    <!-- Invoice Details -->
+
     <table>
+
       <tr>
 
-        <td>
-          <strong>Invoice No :</strong>
-          <span id="invoiceNo"></span>
+        <td width="50%">
+
+          <strong>
+            Invoice No :
+          </strong>
+
+          <input
+            type="text"
+            id="invoiceNo"
+            style="
+              width:180px;
+              display:inline-block;
+              font-weight:bold;
+            "
+          >
+
         </td>
 
-        <td>
-          <strong>Date :</strong>
-          <input type="date" id="invoiceDate">
+        <td width="50%">
+
+          <strong>
+            Date :
+          </strong>
+
+          <input
+            type="date"
+            id="invoiceDate"
+          >
+
         </td>
 
       </tr>
@@ -203,15 +348,30 @@
       <tr>
 
         <td>
-          <strong>State :</strong> Delhi
+
+          <strong>
+            State :
+          </strong>
+
+          Delhi
+
         </td>
 
         <td>
-          <strong>State Code :</strong> 07
+
+          <strong>
+            State Code :
+          </strong>
+
+          07
+
         </td>
 
       </tr>
+
     </table>
+
+    <!-- Customer -->
 
     <table class="customer-box">
 
@@ -219,23 +379,31 @@
 
         <td width="50%">
 
-          <strong>Bill To :</strong><br><br>
+          <strong>
+            Bill To :
+          </strong>
 
-          <input type="text" placeholder="Customer Name"><br><br>
+          <br><br>
 
-          <input type="text" placeholder="Customer Address"><br><br>
-
-          <input type="text" placeholder="Customer GST Number">
+          <textarea
+            rows="4"
+            placeholder="Customer Name&#10;Customer Address&#10;GST Number"
+          ></textarea>
 
         </td>
 
         <td width="50%">
 
-          <strong>Ship To :</strong><br><br>
+          <strong>
+            Ship To :
+          </strong>
 
-          <input type="text" placeholder="Shipping Name"><br><br>
+          <br><br>
 
-          <input type="text" placeholder="Shipping Address">
+          <textarea
+            rows="4"
+            placeholder="Shipping Name&#10;Shipping Address"
+          ></textarea>
 
         </td>
 
@@ -243,20 +411,45 @@
 
     </table>
 
-    <table id="itemTable">
+    <!-- Items -->
+
+    <table class="items-table">
 
       <thead>
 
         <tr>
 
-          <th>S.No</th>
-          <th>Description</th>
-          <th>HSN/SAC</th>
-          <th>Qty</th>
-          <th>Rate</th>
-          <th>Taxable</th>
-          <th>GST %</th>
-          <th>Total</th>
+          <th width="5%">
+            S.No
+          </th>
+
+          <th width="28%">
+            Description
+          </th>
+
+          <th width="12%">
+            HSN/SAC
+          </th>
+
+          <th width="8%">
+            Qty
+          </th>
+
+          <th width="12%">
+            Rate
+          </th>
+
+          <th width="13%">
+            Taxable
+          </th>
+
+          <th width="8%">
+            GST%
+          </th>
+
+          <th width="14%">
+            Total
+          </th>
 
         </tr>
 
@@ -268,54 +461,88 @@
 
     </table>
 
+    <!-- Totals -->
+
     <table class="totals">
 
       <tr>
 
-        <td>Taxable Amount</td>
-        <td id="taxableAmount">0.00</td>
+        <td>
+          Taxable Amount
+        </td>
 
-      </tr>
-
-      <tr>
-
-        <td>CGST</td>
-        <td id="cgstAmount">0.00</td>
-
-      </tr>
-
-      <tr>
-
-        <td>SGST</td>
-        <td id="sgstAmount">0.00</td>
+        <td id="taxableAmount">
+          0.00
+        </td>
 
       </tr>
 
       <tr>
 
         <td>
-          <strong>Grand Total</strong>
+          CGST
+        </td>
+
+        <td id="cgstAmount">
+          0.00
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+          SGST
+        </td>
+
+        <td id="sgstAmount">
+          0.00
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+
+          <strong>
+            Grand Total
+          </strong>
+
         </td>
 
         <td id="grandTotal">
-          <strong>0.00</strong>
+
+          <strong>
+            0.00
+          </strong>
+
         </td>
 
       </tr>
 
     </table>
 
+    <!-- Footer -->
+
     <div class="footer">
 
       <div>
 
-        <strong>Bank Details</strong><br><br>
+        <strong>
+          Bank Details
+        </strong>
 
-        Bank Name : ___________________<br>
+        <br><br>
 
-        A/C No : ___________________<br>
+        Bank Name :
+        ___________________<br>
 
-        IFSC Code : ___________________
+        A/C No :
+        ___________________<br>
+
+        IFSC Code :
+        ___________________
 
       </div>
 
@@ -324,7 +551,9 @@
         For DARKLINE INDIA
 
         <div class="signature">
+
           Authorized Signatory
+
         </div>
 
       </div>
@@ -337,12 +566,16 @@
 
     // AUTO INVOICE NUMBER
 
-    let invoiceCounter = localStorage.getItem("invoiceCounter") || 1;
+    let invoiceCounter =
+    localStorage.getItem("invoiceCounter") || 1;
 
     function updateInvoiceNumber(){
 
-      document.getElementById("invoiceNo").innerText =
-      "DLI-" + String(invoiceCounter).padStart(4,"0");
+      document.getElementById("invoiceNo").value =
+
+      "DLI-" +
+
+      String(invoiceCounter).padStart(4,"0");
 
     }
 
@@ -350,73 +583,123 @@
 
     // TODAY DATE
 
-    document.getElementById("invoiceDate").valueAsDate = new Date();
+    document.getElementById("invoiceDate").valueAsDate =
 
-    // CREATE DEFAULT 5 ROWS
+    new Date();
+
+    // CREATE ROW
 
     function createRow(index){
 
       return `
-        <tr>
 
-          <td>${index}</td>
+      <tr>
 
-          <td>
-            <input type="text" placeholder="Item Name">
-          </td>
+        <td>
 
-          <td>
-            <input type="text" placeholder="HSN">
-          </td>
+          ${index}
 
-          <td>
-            <input type="number" class="qty" value="1">
-          </td>
+        </td>
 
-          <td>
-            <input type="number" class="rate" value="0">
-          </td>
+        <td>
 
-          <td>
-            <input type="number" class="taxable" readonly>
-          </td>
+          <input
+            type="text"
+            class="desc"
+          >
 
-          <td>
-            <input type="number" class="gst" value="18">
-          </td>
+        </td>
 
-          <td>
-            <input type="number" class="total" readonly>
-          </td>
+        <td>
 
-        </tr>
+          <input type="text">
+
+        </td>
+
+        <td>
+
+          <input
+            type="number"
+            class="qty"
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="number"
+            class="rate"
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="text"
+            class="taxable"
+            readonly
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="number"
+            class="gst"
+            value="18"
+          >
+
+        </td>
+
+        <td>
+
+          <input
+            type="text"
+            class="total"
+            readonly
+          >
+
+        </td>
+
+      </tr>
+
       `;
 
     }
 
-    function loadDefaultRows(){
+    // DEFAULT BLANK ROWS
 
-      let body = document.getElementById("itemBody");
+    function loadRows(){
 
-      for(let i=1; i<=5; i++){
+      let body =
+      document.getElementById("itemBody");
 
-        body.innerHTML += createRow(i);
+      for(let i=1;i<=5;i++){
+
+        body.innerHTML +=
+        createRow(i);
 
       }
 
     }
 
-    loadDefaultRows();
+    loadRows();
 
     // ADD ROW
 
     function addRow(){
 
-      let body = document.getElementById("itemBody");
+      let body =
+      document.getElementById("itemBody");
 
-      let rowCount = body.rows.length + 1;
+      let rowCount =
+      body.rows.length + 1;
 
-      body.innerHTML += createRow(rowCount);
+      body.innerHTML +=
+      createRow(rowCount);
 
     }
 
@@ -424,7 +707,8 @@
 
     function calculateTotals(){
 
-      let rows = document.querySelectorAll("#itemBody tr");
+      let rows =
+      document.querySelectorAll("#itemBody tr");
 
       let taxableTotal = 0;
 
@@ -432,27 +716,55 @@
 
       let grandTotal = 0;
 
-      rows.forEach(row => {
+      rows.forEach((row)=>{
+
+        let desc =
+        row.querySelector(".desc")
+        .value
+        .trim();
 
         let qty =
-        parseFloat(row.querySelector(".qty").value) || 0;
+        parseFloat(
+          row.querySelector(".qty").value
+        ) || 0;
 
         let rate =
-        parseFloat(row.querySelector(".rate").value) || 0;
+        parseFloat(
+          row.querySelector(".rate").value
+        ) || 0;
 
         let gst =
-        parseFloat(row.querySelector(".gst").value) || 0;
+        parseFloat(
+          row.querySelector(".gst").value
+        ) || 0;
 
-        let taxable = qty * rate;
+        // BLANK ROW SKIP
 
-        let gstAmount = taxable * gst / 100;
+        if(desc === ""){
 
-        let total = taxable + gstAmount;
+          row.querySelector(".taxable").value = "";
+
+          row.querySelector(".total").value = "";
+
+          return;
+
+        }
+
+        let taxable =
+        qty * rate;
+
+        let gstAmount =
+        taxable * gst / 100;
+
+        let total =
+        taxable + gstAmount;
 
         row.querySelector(".taxable").value =
+
         taxable.toFixed(2);
 
         row.querySelector(".total").value =
+
         total.toFixed(2);
 
         taxableTotal += taxable;
@@ -464,39 +776,50 @@
       });
 
       document.getElementById("taxableAmount").innerText =
+
       taxableTotal.toFixed(2);
 
       document.getElementById("cgstAmount").innerText =
+
       (gstTotal / 2).toFixed(2);
 
       document.getElementById("sgstAmount").innerText =
+
       (gstTotal / 2).toFixed(2);
 
       document.getElementById("grandTotal").innerHTML =
-      "<strong>" + grandTotal.toFixed(2) + "</strong>";
+
+      "<strong>" +
+
+      grandTotal.toFixed(2) +
+
+      "</strong>";
 
     }
 
-    document.addEventListener("input", calculateTotals);
+    document.addEventListener(
+      "input",
+      calculateTotals
+    );
 
-    calculateTotals();
-
-    // PDF DOWNLOAD
+    // DOWNLOAD PDF
 
     function downloadPDF(){
 
       calculateTotals();
 
-      let invoice = document.getElementById("invoice");
+      let invoice =
+      document.getElementById("invoice");
 
-      let invoiceNumber =
-      document.getElementById("invoiceNo").innerText;
+      let invoiceNo =
+      document.getElementById("invoiceNo").value;
 
       let options = {
 
-        margin:0.3,
+        margin:[5,5,5,5],
 
-        filename: invoiceNumber + ".pdf",
+        filename:
+        invoiceNo + ".pdf",
 
         image:{
           type:"jpeg",
@@ -504,20 +827,24 @@
         },
 
         html2canvas:{
-          scale:2
+          scale:2,
+          useCORS:true
         },
 
         jsPDF:{
-          unit:"in",
+          unit:"mm",
           format:"a4",
           orientation:"portrait"
         }
 
       };
 
-      html2pdf().set(options).from(invoice).save();
+      html2pdf()
+      .set(options)
+      .from(invoice)
+      .save();
 
-      // NEXT BILL NUMBER
+      // NEXT INVOICE NUMBER
 
       invoiceCounter++;
 
@@ -526,7 +853,7 @@
         invoiceCounter
       );
 
-      setTimeout(() => {
+      setTimeout(()=>{
 
         updateInvoiceNumber();
 
