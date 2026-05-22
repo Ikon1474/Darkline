@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Darkline India GST Invoice Generator</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#f3f3f3;
+      padding:20px;
+    }
+
+    .top-buttons{
+      text-align:center;
+      margin-bottom:20px;
+    }
+
+    button{
+      background:#000;
+      color:#fff;
+      border:none;
+      padding:12px 20px;
+      margin:5px;
+      cursor:pointer;
+      border-radius:5px;
+      font-size:14px;
+    }
+
+    .invoice-container{
+      width:100%;
+      max-width:1100px;
+      margin:auto;
+      background:#fff;
+      border:2px solid #000;
+      padding:25px;
+    }
+
+    .company-header{
+      text-align:center;
+      border-bottom:2px solid #000;
+      padding-bottom:15px;
+      margin-bottom:20px;
+    }
+
+    .company-header h1{
+      font-size:34px;
+      margin-bottom:8px;
+    }
+
+    .company-header p{
+      font-size:14px;
+      line-height:22px;
+    }
+
+    .invoice-title{
+      margin-top:15px;
+      font-size:26px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-bottom:20px;
+    }
+
+    table td,
+    table th{
+      border:1px solid #000;
+      padding:8px;
+      font-size:14px;
+    }
+
+    table th{
+      background:#efefef;
+    }
+
+    input{
+      width:100%;
+      border:none;
+      outline:none;
+      font-size:14px;
+    }
+
+    .customer-box td{
+      vertical-align:top;
+      height:120px;
+    }
+
+    .totals{
+      width:350px;
+      margin-left:auto;
+    }
+
+    .footer{
+      margin-top:40px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+    }
+
+    .signature{
+      margin-top:70px;
+      border-top:1px solid #000;
+      text-align:center;
+      padding-top:5px;
+    }
+
+    @media(max-width:768px){
+
+      .invoice-container{
+        padding:10px;
+      }
+
+      table{
+        display:block;
+        overflow-x:auto;
+      }
+
+      .footer{
+        flex-direction:column;
+        gap:30px;
+      }
+
+      .totals{
+        width:100%;
+      }
+    }
+
+    @media print{
+
+      .top-buttons{
+        display:none;
+      }
+
+      body{
+        background:#fff;
+        padding:0;
+      }
+
+      .invoice-container{
+        border:none;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="top-buttons">
+    <button onclick="addRow()">+ Add Item</button>
+    <button onclick="downloadPDF()">Generate PDF</button>
+  </div>
+
+  <div class="invoice-container" id="invoice">
+
+    <div class="company-header">
+
+      <h1>DARKLINE INDIA</h1>
+
+      <p>
+        Ground Floor, Old Village Okhla,<br>
+        New Delhi-110025, Delhi, India
+      </p>
+
+      <p>
+        GSTIN : 07AHHPN4889J1ZN
+      </p>
+
+      <div class="invoice-title">
+        TAX INVOICE
+      </div>
+
+    </div>
+
+    <table>
+      <tr>
+
+        <td>
+          <strong>Invoice No :</strong>
+          <span id="invoiceNo"></span>
+        </td>
+
+        <td>
+          <strong>Date :</strong>
+          <input type="date" id="invoiceDate">
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+          <strong>State :</strong> Delhi
+        </td>
+
+        <td>
+          <strong>State Code :</strong> 07
+        </td>
+
+      </tr>
+    </table>
+
+    <table class="customer-box">
+
+      <tr>
+
+        <td width="50%">
+
+          <strong>Bill To :</strong><br><br>
+
+          <input type="text" placeholder="Customer Name"><br><br>
+
+          <input type="text" placeholder="Customer Address"><br><br>
+
+          <input type="text" placeholder="Customer GST Number">
+
+        </td>
+
+        <td width="50%">
+
+          <strong>Ship To :</strong><br><br>
+
+          <input type="text" placeholder="Shipping Name"><br><br>
+
+          <input type="text" placeholder="Shipping Address">
+
+        </td>
+
+      </tr>
+
+    </table>
+
+    <table id="itemTable">
+
+      <thead>
+
+        <tr>
+
+          <th>S.No</th>
+          <th>Description</th>
+          <th>HSN/SAC</th>
+          <th>Qty</th>
+          <th>Rate</th>
+          <th>Taxable</th>
+          <th>GST %</th>
+          <th>Total</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="itemBody">
+
+      </tbody>
+
+    </table>
+
+    <table class="totals">
+
+      <tr>
+
+        <td>Taxable Amount</td>
+        <td id="taxableAmount">0.00</td>
+
+      </tr>
+
+      <tr>
+
+        <td>CGST</td>
+        <td id="cgstAmount">0.00</td>
+
+      </tr>
+
+      <tr>
+
+        <td>SGST</td>
+        <td id="sgstAmount">0.00</td>
+
+      </tr>
+
+      <tr>
+
+        <td>
+          <strong>Grand Total</strong>
+        </td>
+
+        <td id="grandTotal">
+          <strong>0.00</strong>
+        </td>
+
+      </tr>
+
+    </table>
+
+    <div class="footer">
+
+      <div>
+
+        <strong>Bank Details</strong><br><br>
+
+        Bank Name : ___________________<br>
+
+        A/C No : ___________________<br>
+
+        IFSC Code : ___________________
+
+      </div>
+
+      <div>
+
+        For DARKLINE INDIA
+
+        <div class="signature">
+          Authorized Signatory
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    // AUTO INVOICE NUMBER
+
+    let invoiceCounter = localStorage.getItem("invoiceCounter") || 1;
+
+    function updateInvoiceNumber(){
+
+      document.getElementById("invoiceNo").innerText =
+      "DLI-" + String(invoiceCounter).padStart(4,"0");
+
+    }
+
+    updateInvoiceNumber();
+
+    // TODAY DATE
+
+    document.getElementById("invoiceDate").valueAsDate = new Date();
+
+    // CREATE DEFAULT 5 ROWS
+
+    function createRow(index){
+
+      return `
+        <tr>
+
+          <td>${index}</td>
+
+          <td>
+            <input type="text" placeholder="Item Name">
+          </td>
+
+          <td>
+            <input type="text" placeholder="HSN">
+          </td>
+
+          <td>
+            <input type="number" class="qty" value="1">
+          </td>
+
+          <td>
+            <input type="number" class="rate" value="0">
+          </td>
+
+          <td>
+            <input type="number" class="taxable" readonly>
+          </td>
+
+          <td>
+            <input type="number" class="gst" value="18">
+          </td>
+
+          <td>
+            <input type="number" class="total" readonly>
+          </td>
+
+        </tr>
+      `;
+
+    }
+
+    function loadDefaultRows(){
+
+      let body = document.getElementById("itemBody");
+
+      for(let i=1; i<=5; i++){
+
+        body.innerHTML += createRow(i);
+
+      }
+
+    }
+
+    loadDefaultRows();
+
+    // ADD ROW
+
+    function addRow(){
+
+      let body = document.getElementById("itemBody");
+
+      let rowCount = body.rows.length + 1;
+
+      body.innerHTML += createRow(rowCount);
+
+    }
+
+    // CALCULATE TOTALS
+
+    function calculateTotals(){
+
+      let rows = document.querySelectorAll("#itemBody tr");
+
+      let taxableTotal = 0;
+
+      let gstTotal = 0;
+
+      let grandTotal = 0;
+
+      rows.forEach(row => {
+
+        let qty =
+        parseFloat(row.querySelector(".qty").value) || 0;
+
+        let rate =
+        parseFloat(row.querySelector(".rate").value) || 0;
+
+        let gst =
+        parseFloat(row.querySelector(".gst").value) || 0;
+
+        let taxable = qty * rate;
+
+        let gstAmount = taxable * gst / 100;
+
+        let total = taxable + gstAmount;
+
+        row.querySelector(".taxable").value =
+        taxable.toFixed(2);
+
+        row.querySelector(".total").value =
+        total.toFixed(2);
+
+        taxableTotal += taxable;
+
+        gstTotal += gstAmount;
+
+        grandTotal += total;
+
+      });
+
+      document.getElementById("taxableAmount").innerText =
+      taxableTotal.toFixed(2);
+
+      document.getElementById("cgstAmount").innerText =
+      (gstTotal / 2).toFixed(2);
+
+      document.getElementById("sgstAmount").innerText =
+      (gstTotal / 2).toFixed(2);
+
+      document.getElementById("grandTotal").innerHTML =
+      "<strong>" + grandTotal.toFixed(2) + "</strong>";
+
+    }
+
+    document.addEventListener("input", calculateTotals);
+
+    calculateTotals();
+
+    // PDF DOWNLOAD
+
+    function downloadPDF(){
+
+      calculateTotals();
+
+      let invoice = document.getElementById("invoice");
+
+      let invoiceNumber =
+      document.getElementById("invoiceNo").innerText;
+
+      let options = {
+
+        margin:0.3,
+
+        filename: invoiceNumber + ".pdf",
+
+        image:{
+          type:"jpeg",
+          quality:1
+        },
+
+        html2canvas:{
+          scale:2
+        },
+
+        jsPDF:{
+          unit:"in",
+          format:"a4",
+          orientation:"portrait"
+        }
+
+      };
+
+      html2pdf().set(options).from(invoice).save();
+
+      // NEXT BILL NUMBER
+
+      invoiceCounter++;
+
+      localStorage.setItem(
+        "invoiceCounter",
+        invoiceCounter
+      );
+
+      setTimeout(() => {
+
+        updateInvoiceNumber();
+
+      },1000);
+
+    }
+
+  </script>
+
+</body>
+</html>
